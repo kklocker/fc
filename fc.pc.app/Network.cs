@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-using fc.Abstractions;
+﻿using fc.Abstractions;
 
 namespace fc.pc.app;
 
@@ -98,31 +96,32 @@ public class Network
 
     public void Next()
     {
-
+        var activations = _nodes.Select(_activationFunction.Activate).ToArray(); // Ugh, should have better structure than doing this
         UpdateActivations();
-        UpdateWeights();
+        UpdateWeights(activations);
         UpdatePredictionErrors();
     }
 
-    private void UpdateWeights()
+    private void UpdateWeights(double[] activations)
     {
         if (WeightsAreLocked)
             return;
 
         for (var i = 0; i < _nodes.Count; i++)
         {
-            var node_i = _nodes[i];
-            var activation_i = _activationFunction.Activate(node_i);
             for (var j = 0; j < _nodes.Count; j++)
             {
                 if (i == j)
                     continue;
 
-                var nextWeight = _weights[i, j] + (LearningRate * _nodes[j].Error * activation_i);
+                var nextWeight = _weights[i, j] + (LearningRate * _nodes[j].Error * activations[i]);
                 _weights[i, j] = nextWeight;
 
             }
         }
+
+        //var sum = _weights.Sum();
+        //_weights.Apply(weights => weights / sum); // Normalize weights  - unsure about this
     }
 
     private void UpdatePredictionErrors()
@@ -130,6 +129,10 @@ public class Network
         for (var i = 0; i < _nodes.Count; i++)
         {
             var node_i = _nodes[i];
+
+            if (node_i.IsLocked)
+                continue; // Skip locked nodes -- unsure about the validity of this, but it seems to work for now
+
             var activation_i = node_i.Activation;
             var prediction_i = 0d;
 
@@ -206,53 +209,5 @@ public class Network
             result[i] = node.Activation;
         }
         return result;
-    }
-}
-
-public class Weight
-{
-    private double _value;
-
-    public double Value
-    {
-        get => _value;
-        set
-        {
-            if (isLocked)
-                throw new InvalidOperationException("Weight is locked and cannot be modified.");
-            _value = value;
-        }
-    }
-
-    private bool isLocked = false;
-    public Weight(double value)
-    {
-        _value = value;
-    }
-
-    public void Lock()
-    {
-        isLocked = true;
-    }
-
-    public void Unlock()
-    {
-        isLocked = false;
-    }
-
-
-
-}
-
-public class X : IEnumerable<X>
-{
-    public IEnumerator<X> GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 }

@@ -34,5 +34,5 @@ x_i^{t+1} = x_i^t - \gamma \varepsilon_i^t +  \gamma \sum_j w_{ij}^t f'(x_i^t)
 $$
 
 $$
-w_{ij}^{t+1} = w_{ij}^t + \gamma \varepsilon_i^t f(x_j^t)
+w_{ij}^{t+1} = w_{ij}^t + \gamma \varepsilon_j^t f(x_i^t)
 $$

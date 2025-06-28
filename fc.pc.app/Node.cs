@@ -11,7 +11,6 @@ public class Node : INode
     public double Error { get; set; }
 
     public bool IsLocked { get; set; } = false;
-
 }
 
 public class Matrix2D<T> where T : struct, IComparable<T>
@@ -66,6 +65,15 @@ public static class Matrix2DExtensions
                 matrix[i, j] = func(matrix[i, j]);
 
         return matrix;
+    }
+
+    public static double Sum(this Matrix2D<double> matrix)
+    {
+        double sum = 0.0;
+        for (var i = 0; i < matrix.Rows; i++)
+            for (var j = 0; j < matrix.Columns; j++)
+                sum += matrix[i, j];
+        return sum;
     }
 
 }

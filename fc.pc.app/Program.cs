@@ -25,7 +25,7 @@ using fc.pc.app;
 //}
 
 // XOR problem:
-var xorNetwork = new Network(4, new SigmoidActivationFunction());
+var xorNetwork = new Network(10, new SigmoidActivationFunction());
 xorNetwork.SetDataDimensions(2, 1);
 
 // Train:
@@ -40,7 +40,7 @@ xorNetwork.SetDataDimensions(2, 1);
 
 // Train
 
-var epochs = 1;
+var epochs = 100;
 for (int epoch = 0; epoch < epochs; epoch++)
 {
     Console.WriteLine($"Epoch {epoch + 1}/{epochs}");
@@ -55,7 +55,7 @@ for (int epoch = 0; epoch < epochs; epoch++)
             epochIterationCount++;
             xorNetwork.Next();
             var totalEnergy = xorNetwork.TotalEnergy;
-            if (totalEnergy < 0.001)
+            if (totalEnergy < 0.0001)
             {
                 Console.WriteLine($"XOR Network converged after {i} iterations with total energy: {totalEnergy}");
                 break;
@@ -85,9 +85,8 @@ foreach (var (input, output) in trainingData)
     {
         xorNetwork.Next();
         var totalEnergy = xorNetwork.TotalEnergy;
-        if (totalEnergy < 0.001)
+        if (totalEnergy < 0.0001)
         {
-            Console.WriteLine($"XOR Network converged after {i} iterations with total energy: {totalEnergy}");
             break;
         }
     }
