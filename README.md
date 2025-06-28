@@ -7,6 +7,7 @@ The idea essentially came from the thought "are layers even necessary here?"
 ## Some update rules
 
 From these principles
+
 $$
 \frac{\mathrm{d}}{\mathrm{d}x_i} = -\gamma \frac{\partial E}{\partial x_i}
 $$
@@ -16,8 +17,9 @@ $$
 $$
 
 with 
+
 $$
-E = \sum_i (\varepsilon_i)^2,
+E = \sum_i \varepsilon_i^2,
 $$
 where 
 $$
