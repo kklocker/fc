@@ -10,6 +10,8 @@ public class Node : INode
 
     public double Error { get; set; }
 
+    public bool IsLocked { get; set; } = false;
+
 }
 
 public class Matrix2D<T> where T : struct, IComparable<T>
