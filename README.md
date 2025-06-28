@@ -9,11 +9,11 @@ The idea essentially came from the thought "are layers even necessary here?"
 From these principles
 
 $$
-\frac{\mathrm{d}}{\mathrm{d}x_i} = -\gamma \frac{\partial E}{\partial x_i}
+\frac{\mathrm{d}x_i}{\mathrm{d}t} = -\gamma \frac{\partial E}{\partial x_i}
 $$
 
 $$
-\frac{\mathrm{d}}{\mathrm{d}w_{ij}} = -\gamma \frac{\partial E}{\partial w_{ij}}
+\frac{\mathrm{d}w_{ij}}{\mathrm{d}t} = -\gamma \frac{\partial E}{\partial w_{ij}}
 $$
 
 with 
