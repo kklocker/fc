@@ -1,6 +1,4 @@
-﻿
-
-using fc.Abstractions;
+﻿using fc.Abstractions;
 using fc.pc.app;
 
 //var numberOfNodes = 5;
@@ -25,7 +23,7 @@ using fc.pc.app;
 //}
 
 // XOR problem:
-var xorNetwork = new Network(10, new SigmoidActivationFunction());
+var xorNetwork = new Network(6, new SigmoidActivationFunction());
 xorNetwork.SetDataDimensions(2, 1);
 
 // Train:
@@ -40,7 +38,7 @@ xorNetwork.SetDataDimensions(2, 1);
 
 // Train
 
-var epochs = 100;
+var epochs = 5;
 for (int epoch = 0; epoch < epochs; epoch++)
 {
     Console.WriteLine($"Epoch {epoch + 1}/{epochs}");
@@ -72,27 +70,36 @@ for (int epoch = 0; epoch < epochs; epoch++)
 }
 
 // Test:
+Console.WriteLine();
+Console.WriteLine("Locking weights");
 
 xorNetwork.LockWeights();
 xorNetwork.UnlockOutputActivations();
 
-foreach (var (input, output) in trainingData)
+
+foreach (var (input, _) in trainingData)
 {
     xorNetwork.SetAndLockInputActivations(input);
-    xorNetwork.Next();
 
     for (int i = 0; i < 1000; i++)
     {
+        var previousTotalEnergy = xorNetwork.TotalEnergy;
+
         xorNetwork.Next();
         var totalEnergy = xorNetwork.TotalEnergy;
-        if (totalEnergy < 0.0001)
+
+        if(Math.Abs(totalEnergy - previousTotalEnergy) < 0.0001)
         {
+            Console.WriteLine($"Network seemed to reach a steady state after {i} iterations with total energy: {totalEnergy}");
             break;
+        }
+
+        if (i % 100 == 0)
+        {
+            Console.WriteLine($"Iteration {i}, Total Energy: {totalEnergy}");
         }
     }
 
-
-
     var result = xorNetwork.GetOutputActivations();
-    Console.WriteLine($"Input: {string.Join(", ", input)} => Output: {string.Join(", ", result)}");
+    Console.WriteLine($"Input: {string.Join(", ", input)} => Output: {string.Join(", ", result)}. Total energy: {xorNetwork.TotalEnergy}");
 }

@@ -71,7 +71,6 @@ public class Network
             var node = _nodes[i];
             node.Activation = input[i];
             node.IsLocked = true;
-            node.Error = 0;
         }
     }
 
@@ -89,7 +88,6 @@ public class Network
 
             node.Activation = output[i];
             node.IsLocked = true;
-            node.Error = 0;
         }
 
     }
@@ -119,9 +117,6 @@ public class Network
 
             }
         }
-
-        //var sum = _weights.Sum();
-        //_weights.Apply(weights => weights / sum); // Normalize weights  - unsure about this
     }
 
     private void UpdatePredictionErrors()
@@ -129,9 +124,6 @@ public class Network
         for (var i = 0; i < _nodes.Count; i++)
         {
             var node_i = _nodes[i];
-
-            if (node_i.IsLocked)
-                continue; // Skip locked nodes -- unsure about the validity of this, but it seems to work for now
 
             var activation_i = node_i.Activation;
             var prediction_i = 0d;
@@ -143,8 +135,8 @@ public class Network
 
                 var node_j = _nodes[j];
                 var activate_j = _activationFunction.Activate(node_j);
-                var weight_ij = _weights[i, j];
-                prediction_i += weight_ij * activate_j;
+                var weight_ji = _weights[j, i];
+                prediction_i += weight_ji * activate_j;
             }
 
             node_i.Error = activation_i - prediction_i;
@@ -154,7 +146,6 @@ public class Network
 
     private void UpdateActivations()
     {
-
         for (var i = 0; i < _nodes.Count; i++)
         {
             var node_i = _nodes[i];
@@ -173,9 +164,9 @@ public class Network
                 if (i == j)
                     continue;
 
-                var weight_ji = _weights[j, i];
+                var weight_ij = _weights[i, j];
                 var node_j = _nodes[j];
-                nextActivation += LearningRate * node_j.Error * weight_ji * derivative_i;
+                nextActivation += LearningRate * node_j.Error * weight_ij * derivative_i;
             }
 
             node_i.Activation = nextActivation;
@@ -187,17 +178,6 @@ public class Network
     /// </summary>
     private double CurrentTotalEnergy() =>
         _nodes.Sum(node => Math.Pow(node.Error, 2));
-
-    public int NumberOfWeightsBelowThreshold(double threshold)
-    {
-        int count = 0;
-        for (var i = 0; i < _weights.Rows; i++)
-            for (var j = 0; j < _weights.Columns; j++)
-                if (Math.Abs(_weights[i, j]) < threshold)
-                    count++;
-
-        return count;
-    }
 
     public double[] GetOutputActivations()
     {
